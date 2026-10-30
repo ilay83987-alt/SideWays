@@ -1,0 +1,29 @@
+name: Build SideWays EXE
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Extract ZIP
+        run: Expand-Archive -LiteralPath "sideways-launcher (1).zip" -DestinationPath "src"
+
+      - name: Install and Build
+        working-directory: src/sideways-launcher
+        run: |
+          npm install
+          npm run build
+
+      - name: Upload EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: SideWays-Windows
+          path: src/sideways-launcher/dist/*.exe
